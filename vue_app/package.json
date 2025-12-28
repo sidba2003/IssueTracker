@@ -1,0 +1,32 @@
+{
+  "name": "vue_app",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "watch": {
+    "build": {
+      "patterns": [
+        "index.html",
+        "src"
+      ],
+      "extensions": "js,vue"
+    }
+  },
+  "scripts": {
+    "dev": "vite",
+    "watch": "npm-watch",
+    "build": "vite build && move ..\\frontend\\static\\index.html ..\\frontend\\templates\\",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "npm-watch": "^0.13.0",
+    "pinia": "^3.0.4",
+    "vue": "^3.5.24",
+    "vue-router": "^4.6.4",
+    "vuetify": "^3.11.5"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^6.0.1",
+    "vite": "^7.2.4"
+  }
+}
