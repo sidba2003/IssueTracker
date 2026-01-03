@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia'
+import { setJWTTokens, getJWTTokens } from '../localStorageAPI';
 
 const useAuthenticationStore = defineStore('authentication', {
     state: () => ({ accessToken: null, refreshToken: null }),
@@ -14,28 +15,49 @@ const useAuthenticationStore = defineStore('authentication', {
         setAccessAndRefreshTokens(accessToken, refreshToken) {
             this.accessToken = accessToken;
             this.refreshToken = refreshToken;
+
+            setJWTTokens(this.accessToken, this.refreshToken)
         },
         getBadResponse(){
             const myBlob = new Blob();
             const myOptions = { status: 400, statusText: "Something went wrong while trying to obtain a new access token!" };
             const response = new Response(myBlob, myOptions);
-
             return response;
         },
+        async obtainJWTTokensFromLocalStorage(){
+            const { accessToken, refreshToken } = getJWTTokens();
+            this.setAccessAndRefreshTokens(accessToken, refreshToken);
+        },
         async makeRequest(method, headers, url, body) {
+            await this.obtainJWTTokensFromLocalStorage();
+
             try {
                 if (this.accessToken === null || this.refreshToken === null) {
                     return this.getBadResponse();
                 }
+                
+                let response = null;
 
-                const response = await fetch(url, {
-                    method: method,
-                    headers: {
-                        ...headers,
-                        Authorization: `Bearer ${this.accessToken}`
-                    },
-                    body: JSON.stringify(body),
-                });
+                // GET requests in fetch cannot have a body (else they throw an error),
+                // so have to add a if-else statement to deal with this case
+                if (method !== 'GET'){
+                    response = await fetch(url, {
+                        method: method,
+                        headers: {
+                            ...headers,
+                            Authorization: `Bearer ${this.accessToken}`
+                        },
+                        body: JSON.stringify(body),
+                    });
+                } else {
+                    response = await fetch(url, {
+                        method: method,
+                        headers: {
+                            ...headers,
+                            Authorization: `Bearer ${this.accessToken}`
+                        }
+                    })
+                }
 
                 if (!response.ok) {
                     throw new Error(`Response status: ${response.status}`);
@@ -51,6 +73,8 @@ const useAuthenticationStore = defineStore('authentication', {
                 if (newAccessTokenObtainingAttemptResponse.ok) {
                     const result = await newAccessTokenObtainingAttemptResponse.json();
                     this.accessToken = result.access;
+
+                    setJWTTokens(this.accessToken, this.refreshToken);
 
                     return await this.makeRequest(method, headers, url, body);
                 } 

@@ -140,7 +140,8 @@
                             first_name: this.firstName,
                             last_name: this.lastName,
                             email: this.email,
-                            password: this.password
+                            password: this.password,
+                            company_admin: true
                         }),
                     });
 

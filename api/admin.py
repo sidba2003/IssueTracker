@@ -1,11 +1,12 @@
 from django.contrib import admin
 from .models import (
-    CustomUser
+    CustomUser,
+    Company
 )
 
 
 class CustomUserAdmin(admin.ModelAdmin):
     pass
 
-
 admin.site.register(CustomUser, CustomUserAdmin)
+admin.site.register(Company)

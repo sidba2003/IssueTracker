@@ -41,7 +41,8 @@ def create_user_company():
 class CustomUser(AbstractUser):
     email = models.EmailField(unique=True)
     username = None
-    company = models.ForeignKey(Company, default=create_user_company, on_delete=models.CASCADE)
+    company = models.ForeignKey(Company, default=create_user_company, on_delete=models.CASCADE, related_name='users')
+    company_admin = models.BooleanField(default=False)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []

@@ -3,9 +3,18 @@ import { createWebHistory, createRouter } from 'vue-router'
 import HomeView from './components/HomeView.vue'
 import AuthView from './components/AuthView.vue'
 import { useAuthenticationStore } from './stores/AuthenticationStore'
+import UserHomeView from './components/UserHomeView.vue'
+import CompanyManagementView from './components/CompanyManagementView.vue'
+import IssuesView from './components/IssuesView.vue'
+import ProjectsView from './components/ProjectsView.vue'
 
 const routes = [
-    { path: '/', component: HomeView, name: 'home' },
+    { path: '/', component: HomeView, name: 'home', children: [
+        { path: '', component: UserHomeView, name: 'userHome' },
+        { path: 'company-management', component: CompanyManagementView, name: 'companyManagement' },
+        { path: 'issues', component: IssuesView, name: 'issues' },
+        { path: 'projects', component: ProjectsView, name: 'projects' }
+    ]},
     { path: '/authentication', component: AuthView, name: 'authentication' },
 ]
 
@@ -22,7 +31,7 @@ async function checkUserIsAuthenticated(authenticationStore){
     
     const url = "/api/is-authenticated/";
     try {
-        const response = await authenticationStore.makeRequest('POST', headers, url, {});
+        const response = await authenticationStore.makeRequest('GET', headers, url, null);
         if (response?.ok) {
             return true;
         }

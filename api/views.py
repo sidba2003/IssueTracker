@@ -8,13 +8,14 @@ from .models import (
 )
 from .serializers import (
     UserListSerializer,
-    UserCreateSerializer
+    UserCreateSerializer,
+    UserInformationSerializer
 )
 
 
 class IsAuthenticatedView(APIView):
     permission_classes = [IsAuthenticated]
-    def post(self, request):
+    def get(self, request):
         return Response(status=status.HTTP_200_OK)
 
 
@@ -34,3 +35,10 @@ class UserCreateListAPIView(generics.ListCreateAPIView):
         if self.request.method == 'GET':
             return self.list_serializer_class
         return self.create_serializer_class
+
+
+class UserInformationAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+    def get(self, request):
+        serializer = UserInformationSerializer(request.user)
+        return Response(serializer.data)
