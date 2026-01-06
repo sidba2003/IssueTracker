@@ -62,3 +62,7 @@ class UserInformationSerializer(serializers.ModelSerializer):
             'password',
             'company_admin'
         ]
+
+
+class EditCompanyNameSerializer(serializers.Serializer):
+    company_name = serializers.CharField()

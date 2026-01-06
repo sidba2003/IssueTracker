@@ -9,7 +9,11 @@ from .models import (
 from .serializers import (
     UserListSerializer,
     UserCreateSerializer,
-    UserInformationSerializer
+    UserInformationSerializer,
+    EditCompanyNameSerializer
+)
+from .permissions import (
+    IsAllowedToChangeCompanyName
 )
 
 
@@ -42,3 +46,22 @@ class UserInformationAPIView(APIView):
     def get(self, request):
         serializer = UserInformationSerializer(request.user)
         return Response(serializer.data)
+
+
+class UpdateCompanyNameAPIView(APIView):
+    permission_classes = [IsAuthenticated, IsAllowedToChangeCompanyName]
+
+    def put(self, request):
+        serializer = EditCompanyNameSerializer(data=request.data)
+        if serializer.is_valid():
+            company_name = serializer.data.get("company_name")
+
+            current_user_company = request.user.company
+            current_user_company.name = company_name
+            current_user_company.save()
+
+            print("NAme is >>>", company_name)
+
+            return Response(status=status.HTTP_204_NO_CONTENT)
+
+        return Response(status=status.HTTP_400_BAD_REQUEST)

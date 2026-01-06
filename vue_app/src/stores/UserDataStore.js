@@ -10,6 +10,9 @@ const useUserDataStore = defineStore('userData', {
     actions: {
         setUserData(userData) {
             this.userData = userData;
+        },
+        setCompanyName(name) {
+            this.userData.company.name = name;
         }
     }
 })

@@ -1,5 +1,5 @@
 <template>
-  <v-card>
+  <v-card class="h-screen">
     <v-layout>
       <v-navigation-drawer expand-on-hover permanent rail>
         <v-list>
