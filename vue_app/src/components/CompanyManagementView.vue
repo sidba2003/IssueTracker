@@ -1,5 +1,5 @@
 <template>
-  <div class="d-flex flex-column justify-center align-center h-screen">
+  <div class="d-flex flex-column ga-5 justify-center align-center h-screen">
     <div class="text-h5 ga-3 d-flex align-center">
       Edit Company Name: {{ companyName }}
       <svg-icon
@@ -42,6 +42,8 @@
         <v-btn color="red" variant="text" @click="failedSnackbar = false"> Close </v-btn>
       </template>
     </v-snackbar>
+
+    <user-management-view />
   </div>
 </template>
 
@@ -51,6 +53,7 @@ import { mapState } from "pinia";
 import { mdiPencil } from "@mdi/js";
 import { useUserDataStore } from "../stores/UserDataStore";
 import { useAuthenticationStore } from "../stores/AuthenticationStore";
+import UserManagementView from "./company/UserManagementView.vue";
 
 export default {
   data() {
@@ -63,9 +66,15 @@ export default {
       successSnackBar: false,
     };
   },
+  mounted() {
+    this.companyName = this.getUserDataStore.getUserData?.company?.name;
+  },
   watch: {
-    userData(newVal, oldVal) {
-      this.companyName = newVal?.company?.name;
+    userData: {
+      deep: true,
+      handler(newVal) {
+        this.companyName = newVal?.company?.name;
+      },
     },
   },
   computed: {
@@ -86,10 +95,6 @@ export default {
       this.showCompanyNameEditCard = true;
     },
     async saveNewCompanyName() {
-      const headers = {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      };
       const body = {
         company_name: this.newCompanyName,
       };
@@ -97,7 +102,6 @@ export default {
       try {
         const response = await this.getAuthenticationStore.makeRequest(
           "PUT",
-          headers,
           "/api/update-company-name/",
           body
         );
@@ -105,7 +109,7 @@ export default {
           throw new Error(`Response status: ${response.status}`);
         }
 
-        this.getUserDataStore.setCompanyName(this.companyName);
+        this.getUserDataStore.setCompanyName(this.newCompanyName);
         this.showCompanyNameEditCard = false;
         this.successSnackBar = true;
       } catch (error) {
@@ -116,6 +120,7 @@ export default {
   },
   components: {
     SvgIcon,
+    UserManagementView,
   },
 };
 </script>

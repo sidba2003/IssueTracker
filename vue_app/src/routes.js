@@ -24,14 +24,9 @@ export const router = createRouter({
 })
 
 async function checkUserIsAuthenticated(authenticationStore){
-    const headers =  {
-                    "Accept":"application/json", 
-                    "Content-Type":"application/json"
-                }
-    
     const url = "/api/is-authenticated/";
     try {
-        const response = await authenticationStore.makeRequest('GET', headers, url, null);
+        const response = await authenticationStore.makeRequest('GET', url, null);
         if (response?.ok) {
             return true;
         }

@@ -66,3 +66,15 @@ class UserInformationSerializer(serializers.ModelSerializer):
 
 class EditCompanyNameSerializer(serializers.Serializer):
     company_name = serializers.CharField()
+
+
+class CompanyUsersSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomUser
+        fields = [
+            'first_name',
+            'last_name',
+            'email',
+            'password',
+            'company'
+        ]

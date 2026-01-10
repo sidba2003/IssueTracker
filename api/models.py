@@ -29,7 +29,7 @@ class NewUserManager(UserManager):
 
 
 class Company(models.Model):
-    name = models.CharField(null=True)
+    name = models.CharField(null=True, max_length=25)
 
 
 def create_user_company():

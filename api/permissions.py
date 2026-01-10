@@ -1,8 +1,8 @@
 from rest_framework import permissions
 
 
-class IsAllowedToChangeCompanyName(permissions.BasePermission):
-    message = "Only company admins are allowed to change company names."
+class IsCompanyAdmin(permissions.BasePermission):
+    message = "Only company admins are perform this operation."
 
     def has_permission(self, request, view):
         return request.user.company_admin

@@ -3,7 +3,8 @@ from .views import (
     IsAuthenticatedView,
     UserCreateListAPIView,
     UserInformationAPIView,
-    UpdateCompanyNameAPIView
+    UpdateCompanyNameAPIView,
+    CompanyUserManagement
 )
 
 urlpatterns = [
@@ -11,4 +12,5 @@ urlpatterns = [
     path('signup/', UserCreateListAPIView.as_view()),
     path('current-user-information/', UserInformationAPIView.as_view()),
     path('update-company-name/', UpdateCompanyNameAPIView.as_view()),
+    path('company-user-management/', CompanyUserManagement.as_view())
 ]

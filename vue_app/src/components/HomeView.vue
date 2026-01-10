@@ -4,12 +4,12 @@
       <v-navigation-drawer expand-on-hover permanent rail>
         <v-list>
           <v-list-item
-            :title="userData?.company?.name"
-            v-if="userData?.company?.name !== null"
+            :title="userCurrentData?.company?.name"
+            v-if="userCurrentData?.company?.name !== null"
           ></v-list-item>
         </v-list>
 
-        <v-divider v-if="userData?.company?.name !== null"></v-divider>
+        <v-divider v-if="userCurrentData?.company?.name !== null"></v-divider>
 
         <v-list density="compact" nav>
           <v-list-item
@@ -18,7 +18,7 @@
             value="home"
           ></v-list-item>
           <v-list-item
-            v-if="userData?.company_admin"
+            v-if="userCurrentData?.company_admin"
             @click="$router.push({ name: 'companyManagement' })"
             title="Company Management"
             value="companyManagement"
@@ -45,13 +45,19 @@
 <script>
 import { useAuthenticationStore } from "../stores/AuthenticationStore";
 import { useUserDataStore } from "../stores/UserDataStore";
+import { mapState } from "pinia";
 
 export default {
   data() {
     return {
       drawer: false,
-      userData: null,
+      userCurrentData: null,
     };
+  },
+  watch: {
+    userData(newVal, oldVal) {
+      this.userCurrentData = newVal;
+    },
   },
   computed: {
     getUseAuthenticationStore() {
@@ -60,16 +66,12 @@ export default {
     getUserDataStore() {
       return useUserDataStore();
     },
+    ...mapState(useUserDataStore, ["userData"]),
   },
   async beforeMount() {
     try {
-      const headers = {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      };
       const response = await this.getUseAuthenticationStore.makeRequest(
         "GET",
-        headers,
         "/api/current-user-information/",
         null
       );
@@ -78,8 +80,7 @@ export default {
         const respData = await response.json();
 
         this.getUserDataStore.setUserData(respData);
-        this.userData = this.getUserDataStore.getUserData;
-        console.log("User Data is >>", this.userData);
+        console.log("User Data is >>", this.getUserDataStore.getUserData);
       } else {
         throw new Error(`Response status: ${response.status}`);
       }
